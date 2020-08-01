@@ -5,10 +5,11 @@ import React, { Component } from "react";
 import { GeneralList } from "./GeneralList";
 import { SortedList } from "./SortedList";
 //import { ProFeature } from "./ProFeature";
-import { ProController } from "./ProController";
-import { LogToConsole } from "./LogToConsole";
+//import { ProController } from "./ProController";
+//import { LogToConsole } from "./LogToConsole";
+import { ProModeContext } from "./ProModeContext";
 
-const ProList = ProController(LogToConsole(SortedList, "Sorted", true, true, true));
+//const ProList = ProController(LogToConsole(SortedList, "Sorted", true, true, true));
 
 export default class App extends Component {
   constructor(props) {
@@ -18,6 +19,9 @@ export default class App extends Component {
       names: ["Zosia", "Kuba", "Ala", "Ola", "Jaś"],
       cities: ["Londyn", "Nowy York", "Paryż", "Milan", "Wrocław"],
       //proMode: false
+      proContextData: {
+        proMode: false
+      }
     }
   }
 
@@ -25,41 +29,33 @@ export default class App extends Component {
   //   this.setState({counter: this.state.counter + 1});
   // }
   toggleProMode = () => {
-    this.setState({proMode: !this.state.proMode});
+    this.setState(state => state.proContextData.proMode = !state.proContextData.proMode);
   }
 
   render() {
-    return (
-      // <div className="m-2 text-center">
-      //   <ThemeSelector>
-      //     <Message theme="primary"
-      //       message={`Licznik: ${this.state.counter}`} />
-      //     <ActionButton theme="secondary"
-      //       text="Inkrementuj" callback={this.incrementCounter} />
-      //   </ThemeSelector>
-      // </div>
-      <div className="container-fluid">
-        {/* <div className="row">
-          <div className="col-6">
-            <GeneralList list={this.state.names} theme="primary" />
-          </div>
-          <div className="col-6">
-            <SortedList list={this.state.names} />
-          </div>
-        </div> */}
-        
+    return (  
+      <div className="container-fluid">      
         <div className="row">
-          <div className="col-3">
-            <GeneralList list={this.state.names} theme="primary" />
+          <div className="col-12 text-center p-2">
+            <div className="form-check">
+              <input type="checkbox" className="form-check-input"
+                value={this.state.proContextData.proMode}
+                onChange={this.toggleProMode} />
+              <label className="form-check-label">Tryb dla speców</label>
+            </div>
           </div>
-          <div className="col-3">
-            <ProList list={this.state.names} />
+        </div>
+        <div className="row">
+          <div className="col-6">
+            <GeneralList list={this.state.names}
+              theme="primary" />
           </div>
-          <div className="col-3">
-            <GeneralList list={this.state.cities} theme="secondary" />
-          </div>
-          <div className="col-3">
-            <ProList list={this.state.cities} />
+          <div className="col-6">
+           
+            <ProModeContext.Provider value={this.state.proContextData}>
+              <SortedList list={this.state.names} />
+            </ProModeContext.Provider>
+              
           </div>
         </div>
       </div>
